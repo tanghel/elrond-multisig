@@ -12,9 +12,9 @@ export const network: NetworkType = {
   gatewayAddress: 'https://testnet-gateway.elrond.com',
   explorerAddress: 'http://testnet-explorer.elrond.com/',
   multisigDeployerContracts: [ 
-    'erd1qqqqqqqqqqqqqpgqexj86qkaey54p768xxktxjhf4v7g5svherms3jq45t',
-    'erd1qqqqqqqqqqqqqpgqes94t3grsn59m2ze8qk3ggkwm0rtagfpermsf0tk8g',
-    'erd1qqqqqqqqqqqqqpgqlkmwztwgs3mncp2jtavmu47q5vzj8t6mermsjzumvd',
+    'erd1qqqqqqqqqqqqqpgqjzplgwvy8epyewpkvprtmmfccncug7f4erms54e06y',
+    'erd1qqqqqqqqqqqqqpgqaazq2rcg54fhug6put4x4cu9z0xe66rkermsga8242',
+    'erd1qqqqqqqqqqqqqpgqpctw875mnzhfg58prmnhxrxjv65dg65eermsy5shek',
   ],
   multisigManagerContract: 'erd1qqqqqqqqqqqqqpgqy6uk930uursyuxkrt8pzrmeqaf60ttjuermsyjskp9',
 };
