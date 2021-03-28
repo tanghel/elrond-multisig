@@ -77,6 +77,8 @@ const MultisigDetailsPage = () => {
         type: 'setAllActions',
         allActions: allActions
       });
+    } catch (error) {
+      console.log(error);
     } finally {
       loadingIndicator.hide();
     }
