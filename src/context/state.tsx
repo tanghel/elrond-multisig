@@ -1,6 +1,5 @@
 import { IDappProvider, ProxyProvider, ApiProvider, WalletProvider, Address } from '@elrondnetwork/erdjs';
 import { MultisigActionDetailed } from 'types/MultisigActionDetailed';
-import { MultisigContractInfo } from 'types/MultisigContractInfo';
 import { denomination, decimals, network, NetworkType } from '../config';
 import { getItem } from '../storage/session';
 

@@ -20,7 +20,7 @@ const ProposeChangeQuorum = ({ handleParamsChange } : ProposeChangeQuorumType) =
 
   useEffect(() => {
     setNewQuorumSize(quorumSize);
-  }, []);
+  }, [quorumSize]);
 
   return (
     <div className="modal-control-container">

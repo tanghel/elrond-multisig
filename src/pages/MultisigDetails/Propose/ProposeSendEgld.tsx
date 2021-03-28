@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useContext } from 'context';
 import { Address, Balance } from '@elrondnetwork/erdjs/out';
 import { MultisigSendEgld } from 'types/MultisigSendEgld';
@@ -14,8 +14,6 @@ const ProposeSendEgld = ({ handleChange } : ProposeSendEgldType) => {
   const [amount, setAmount] = useState('');
   const [data, setData] = useState('');
   const { t } = useTranslation();
-
-  const { egldLabel } = useContext();
 
   const getProposal = () : MultisigSendEgld | null => {
     let addressParam = new Address(address);

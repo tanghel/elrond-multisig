@@ -1,4 +1,4 @@
-import { Address, Transaction, TransactionHash, TransactionOnNetwork, TransactionWatcher } from '@elrondnetwork/erdjs/out';
+import { Address } from '@elrondnetwork/erdjs/out';
 import { DappState } from 'context/state';
 import TransactionParameter from 'types/TransactionParameter';
 

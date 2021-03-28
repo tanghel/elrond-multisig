@@ -204,7 +204,7 @@ export class MultisigContract {
       return null;
     }
 
-    let [action, _] = parseAction(result.returnData[0].asBuffer);
+    let [action] = parseAction(result.returnData[0].asBuffer);
     return action;
   }
 

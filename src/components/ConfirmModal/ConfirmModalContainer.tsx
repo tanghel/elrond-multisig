@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Modal } from 'react-bootstrap';
+import React from 'react';
 import ConfirmModal from './ConfirmModal';
 import { useConfirmModal } from './ConfirmModalPayload';
 
@@ -26,7 +25,7 @@ const ConfirmModalContainer = () => {
       setConfirmButtonTitle(confirmButtonTitle);
       setShow(true);
     };
-  }, []);
+  }, [useModal]);
 
   return (
     <ConfirmModal show={show} title={title} confirmButtonTitle={confirmButtonTitle} handleClose={onCloseClicked} handleConfirm={onConfirmClicked} />

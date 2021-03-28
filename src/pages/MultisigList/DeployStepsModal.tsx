@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { Modal } from 'react-bootstrap';
-import { Address } from '@elrondnetwork/erdjs/out';
-import ProposeInputAddress from '../MultisigDetails/Propose/ProposeInputAddress';
 import Stepper from 'react-stepper-horizontal';
 import { useTranslation } from 'react-i18next';
 

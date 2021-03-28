@@ -1,6 +1,5 @@
 import { Address } from '@elrondnetwork/erdjs/out';
 import { MultisigAction } from './MultisigAction';
-import { MultisigActionType } from './MultisigActionType';
 
 export class MultisigActionDetailed {
     actionId: number;

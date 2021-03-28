@@ -1,5 +1,5 @@
 import { Redirect } from 'react-router-dom';
-import { Address, Transaction, TransactionHash } from '@elrondnetwork/erdjs/out';
+import { Address } from '@elrondnetwork/erdjs/out';
 import React, { useState } from 'react';
 import { useContext } from 'context';
 import MultisigListItem from 'pages/MultisigList/MultisigListItem';
@@ -9,7 +9,6 @@ import { useDeployContract } from 'contracts/DeployContract';
 import { useManagerContract } from 'contracts/ManagerContract';
 import { hexToAddress, hexToString } from 'helpers/converters';
 import { tryParseTransactionParameter } from 'helpers/urlparameters';
-import { useConfirmModal } from 'components/ConfirmModal/ConfirmModalPayload';
 import DeployStepsModal from './DeployStepsModal';
 import { useTranslation } from 'react-i18next';
 
@@ -22,8 +21,6 @@ const MultisigListPage = () => {
   const [showAddMultisigModal, setShowAddMultisigModal] = React.useState(false);
   const [showDeployMultisigModal, setShowDeployMultisigModal] = React.useState(false);
   const [currentDeploymentStep, setCurrentDeploymentStep] = React.useState(0);
-
-  const confirmModal = useConfirmModal();
 
   const [multisigContracts, setMultisigContracts] = useState<MultisigContractInfo[]>([]);
 
@@ -120,7 +117,7 @@ const MultisigListPage = () => {
     if (address && address !== '') {
       readMultisigContracts();
     }
-  }, []);
+  }, [address]);
 
   if (!loggedIn) {
     return <Redirect to="/" />;

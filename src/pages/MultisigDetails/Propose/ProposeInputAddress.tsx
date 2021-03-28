@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { useContext } from 'context';
+import React, { useState } from 'react';
 import { Address } from '@elrondnetwork/erdjs/out';
 import { useTranslation } from 'react-i18next';
 

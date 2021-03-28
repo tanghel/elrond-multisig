@@ -1,6 +1,6 @@
 import { Address, Argument, Nonce } from '@elrondnetwork/erdjs/out';
 import { NumericalBinaryCodec } from '@elrondnetwork/erdjs/out/smartcontracts/codec/numerical';
-import { BigUIntType, NumericalType, NumericalValue, U32Type } from '@elrondnetwork/erdjs/out/smartcontracts/typesystem';
+import { BigUIntType } from '@elrondnetwork/erdjs/out/smartcontracts/typesystem';
 import { MultisigAction } from 'types/MultisigAction';
 import { MultisigActionDetailed } from 'types/MultisigActionDetailed';
 import { MultisigActionType } from 'types/MultisigActionType';

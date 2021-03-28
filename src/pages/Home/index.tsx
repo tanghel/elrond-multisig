@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 
 const Home = () => {
   const { t } = useTranslation();
-  const { loading, error, loggedIn, egldLabel } = useContext();
+  const { loading, error, loggedIn } = useContext();
 
   const ref = React.useRef(null);
 

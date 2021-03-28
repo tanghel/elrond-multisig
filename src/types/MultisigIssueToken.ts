@@ -1,4 +1,3 @@
-import { Address, Balance } from '@elrondnetwork/erdjs/out';
 import { MultisigAction } from './MultisigAction';
 import { MultisigActionType } from './MultisigActionType';
 import i18next from 'i18next';

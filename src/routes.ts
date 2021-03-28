@@ -3,7 +3,6 @@ import MultisigDetailsPage from './pages/MultisigDetails/MultisigDetailsPage';
 import Home from './pages/Home';
 import withPageTitle from './components/PageTitle';
 import MultisigListPage from 'pages/MultisigList/MultisigListPage';
-import i18next from 'i18next';
 
 interface RouteType {
   path: string;

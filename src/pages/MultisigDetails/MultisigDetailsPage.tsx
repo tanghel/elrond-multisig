@@ -12,7 +12,6 @@ import { useMultisigContract } from 'contracts/MultisigContract';
 import { useLoading } from 'helpers/loading';
 import { tryParseTransactionParameter } from 'helpers/urlparameters';
 import { hexToNumber, hexToString } from 'helpers/converters';
-import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
 import { useConfirmModal } from 'components/ConfirmModal/ConfirmModalPayload';
 import { useTranslation } from 'react-i18next';
 
@@ -36,14 +35,6 @@ const MultisigDetailsPage = () => {
       return undefined;
     }
   };
-
-  if (address === null) {
-    return <Redirect to="/" />;
-  }
-
-  if (!parseMultisigAddress()) {
-    return <Redirect to="/multisig" />;
-  }
 
   const getDashboardInfo = async () => {
     loadingIndicator.show();
@@ -200,6 +191,9 @@ const MultisigDetailsPage = () => {
     tryParseUrlParams();
 
     let multisigAddressParam = parseMultisigAddress();
+    if (multisigAddressParam === null) {
+      return;
+    }
 
     let isCurrentMultisigAddressNotSet = !currentMultisigAddress;
     let isCurrentMultisigAddressDiferentThanParam = currentMultisigAddress && multisigAddressParam && 
@@ -210,7 +204,15 @@ const MultisigDetailsPage = () => {
     } else if (address !== null) {
       getDashboardInfo();
     }
-  }, [ currentMultisigAddress ]);
+  }, [ currentMultisigAddress, address ]);
+
+  if (address === null) {
+    return <Redirect to="/" />;
+  }
+
+  if (!parseMultisigAddress()) {
+    return <Redirect to="/multisig" />;
+  }
 
   return (
     <div className="dashboard w-100">

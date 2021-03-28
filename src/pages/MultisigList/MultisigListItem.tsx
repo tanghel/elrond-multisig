@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDispatch } from 'context';
 import { Address } from '@elrondnetwork/erdjs/out';
 import { useHistory } from 'react-router-dom';
 import { useManagerContract } from 'contracts/ManagerContract';

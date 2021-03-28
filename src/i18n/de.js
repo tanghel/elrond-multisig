@@ -11,7 +11,6 @@ export const germanTranslations = {
   'Register Name': 'Name registrieren',
   'Attach': 'Anfügen',
   'Name': 'Name',
-  'Multisig Manager': 'Multisignatur-Manager',
   'Board Members': 'Vorstandsmitglieder',
   'Proposers': 'Antragsteller',
   'Quorum Size': 'Quorumgröße',

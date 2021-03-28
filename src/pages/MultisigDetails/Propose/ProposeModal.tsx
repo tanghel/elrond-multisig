@@ -3,7 +3,7 @@ import { Modal } from 'react-bootstrap';
 import Select from 'react-select';
 import ProposeChangeQuorum from './ProposeChangeQuorum';
 import ProposeInputAddressType from './ProposeInputAddress';
-import { Address, Balance } from '@elrondnetwork/erdjs/out';
+import { Address } from '@elrondnetwork/erdjs/out';
 import ProposeSendEgld from './ProposeSendEgld';
 import { MultisigSendEgld } from 'types/MultisigSendEgld';
 import { MultisigAction } from 'types/MultisigAction';
@@ -112,15 +112,15 @@ const ProposeModal = ({ show, handleClose }: ProposeModalType) => {
           />
 
           <div className="p-spacer">
-          { selectedOption == 'change_quorum' ?
+          { selectedOption === 'change_quorum' ?
             <ProposeChangeQuorum handleParamsChange={handleNumericParamChange} /> : 
-            (selectedOption == 'add_proposer' || selectedOption == 'add_board_member' || selectedOption == 'remove_user') ?
+            (selectedOption === 'add_proposer' || selectedOption === 'add_board_member' || selectedOption === 'remove_user') ?
             <ProposeInputAddressType handleParamsChange={handleAddressParamChange} /> :
-            (selectedOption == 'send_egld') ?
+            (selectedOption === 'send_egld') ?
             <ProposeSendEgld handleChange={handleProposalChange} /> : 
-            (selectedOption == 'issue_token') ?
+            (selectedOption === 'issue_token') ?
             <ProposeIssueToken handleChange={handleProposalChange} /> :
-            (selectedOption == 'send_token') ?
+            (selectedOption === 'send_token') ?
             <ProposeSendToken handleChange={handleProposalChange} /> :
             null
           }
