@@ -23,7 +23,7 @@ export class ManagerContract {
   private dapp: DappState;
   private contract: SmartContract;
   private signerProvider?: IDappProvider;
-  private standardGasLimit = 120000000;
+  private standardGasLimit = 60000000;
 
   constructor(dapp: DappState, contract: string, signer: IDappProvider, address: Address) {
     this.dapp = dapp;

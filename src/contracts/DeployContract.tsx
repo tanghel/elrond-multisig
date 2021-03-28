@@ -20,7 +20,7 @@ export class DeployContract {
   private dapp: DappState;
   private contract: SmartContract;
   private signerProvider?: IDappProvider;
-  private standardGasLimit = 120000000;
+  private standardGasLimit = 60000000;
 
   constructor(dapp: DappState, contract: string, signer: IDappProvider, address: Address) {
     this.dapp = dapp;
@@ -71,7 +71,7 @@ export class DeployContract {
     let transaction = new Transaction({
       receiver: this.contract.getAddress(),
       value: Balance.eGLD(value),
-      gasLimit: new GasLimit(1200000000),
+      gasLimit: new GasLimit(this.standardGasLimit),
       data: payload,
     });
 

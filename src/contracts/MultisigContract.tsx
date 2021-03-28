@@ -26,7 +26,7 @@ export class MultisigContract {
   private dapp: DappState;
   private contract: SmartContract;
   private signerProvider?: IDappProvider;
-  private standardGasLimit = 120000000;
+  private standardGasLimit = 60000000;
 
   constructor(dapp: DappState, address?: Address, signer?: IDappProvider) {
     this.dapp = dapp;
