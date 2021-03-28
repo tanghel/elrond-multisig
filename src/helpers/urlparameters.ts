@@ -11,7 +11,6 @@ export async function tryParseTransactionParameter(dapp: DappState): Promise<Tra
 
     let fetchResult = await fetch(`${dapp.apiUrl}/transactions/${txHash}`);
     let json = await fetchResult.json();
-    console.log({json});
 
     let inputData = json.data;
     if (!inputData) {
