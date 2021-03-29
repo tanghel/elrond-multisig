@@ -9,7 +9,7 @@ import { useDeployContract } from 'contracts/DeployContract';
 import { useManagerContract } from 'contracts/ManagerContract';
 import { hexToAddress, hexToString } from 'helpers/converters';
 import { tryParseTransactionParameter } from 'helpers/urlparameters';
-import DeployStepsModal from './DeployStepsModal';
+import DeployStepsModal from './DeployMultisigModal';
 import { useTranslation } from 'react-i18next';
 
 const MultisigListPage = () => {

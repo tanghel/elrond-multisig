@@ -1,31 +1,62 @@
 import React, { useState } from 'react';
 import { Modal } from 'react-bootstrap';
+import Stepper from 'react-stepper-horizontal';
+import { useTranslation } from 'react-i18next';
 
-interface DeployMultisigModalType {
+interface DeployStepsModalType {
   show: boolean;
   handleClose: () => void;
-  handleDeploy: (name: string) => void;
+  handleStep: (name: string) => void;
+  currentStep: number;
 }
 
-const DeployMultisigModal = ({ show, handleClose, handleDeploy }: DeployMultisigModalType) => {
-  const [name, setName] = React.useState('');
+const DeployStepsModal = ({ show, handleClose, handleStep, currentStep }: DeployStepsModalType) => {
+  const { t } = useTranslation();
 
-  const onDeployClicked = () => {
-    handleDeploy(name);
+  const steps = [
+    {title: t('Deploy') }, 
+    {title: t('Register Name') }, 
+    {title: t('Attach') }
+  ];
+
+  const [ name, setName ] = useState('');
+
+  const onConfirmClicked = () => {
+    handleStep(name);
   };
+
+  React.useEffect(() => {
+    setName('');
+  }, [ currentStep ]);
 
   return (
     <Modal show={show} onHide={handleClose} className="modal-container" animation={false} centered>
       <div className="card">
         <div className="card-body p-spacer text-center">
           <p className="h6 mb-spacer" data-testid="delegateTitle">
-            Step 1: Deploy Multisig
+            {t('Multisig Deployment')}
           </p>
 
-          <div className="p-spacer">
-            <div style={{display: 'flex', alignItems: 'center'}}>
-              <span className="mr-2">Name: </span>
+          <div className="pb-5">
+            <Stepper 
+              steps={steps}
+              activeStep={ currentStep } 
+              defaultTitleOpacity="0.4"
+              defaultColor="gray"
+              defaultOpacity="0.2"
+              activeColor="#FFFFFF33"
+              activeTitleColor="#FFFFFFCC" 
+              completeTitleColor="#FFFFFFBB" 
+              completeColor="#00FF0066"
+              completeBarColor="white"
+            />
+          </div>
+
+          { currentStep === 1 ?
+            <div className="modal-control-container pb-3">
+              <span>{t('Name')}: </span>
               <input 
+                style={{ width: 280 }}
                 type="text"
                 className='form-control'
                 value={name}
@@ -33,14 +64,15 @@ const DeployMultisigModal = ({ show, handleClose, handleDeploy }: DeployMultisig
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
-          </div>
+            : null
+          }
 
           <div>
             <button
-              onClick={onDeployClicked}
+              onClick={onConfirmClicked}
               className="btn btn-primary mb-3"
             >
-              Start deployment
+              {steps[currentStep].title}
             </button>
           </div>
         </div>
@@ -49,4 +81,4 @@ const DeployMultisigModal = ({ show, handleClose, handleDeploy }: DeployMultisig
   );
 };
 
-export default DeployMultisigModal;
+export default DeployStepsModal;
