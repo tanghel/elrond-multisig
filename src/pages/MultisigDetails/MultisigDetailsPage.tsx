@@ -14,14 +14,16 @@ import { tryParseTransactionParameter } from 'helpers/urlparameters';
 import { hexToNumber, hexToString } from 'helpers/converters';
 import { useConfirmModal } from 'components/ConfirmModal/ConfirmModalPayload';
 import { useTranslation } from 'react-i18next';
+import { useManagerContract } from 'contracts/ManagerContract';
 
 interface MultisigDetailsPageParams {
   multisigAddressParam: string
 }
 
 const MultisigDetailsPage = () => {
-  const { address, totalBoardMembers, totalProposers, quorumSize, userRole, loading, allActions, currentMultisigAddress, dapp } = useContext();
+  const { address, totalBoardMembers, totalProposers, quorumSize, userRole, loading, allActions, currentMultisigAddress, dapp, multisigBalance, egldLabel, multisigName } = useContext();
   const { multisigContract } = useMultisigContract();
+  const { managerContract } = useManagerContract();
   const dispatch = useDispatch();
   const loadingIndicator = useLoading();
   let { multisigAddressParam } = useParams<MultisigDetailsPageParams>();
@@ -37,6 +39,10 @@ const MultisigDetailsPage = () => {
   };
 
   const getDashboardInfo = async () => {
+    if (currentMultisigAddress === null) {
+      return;
+    }
+
     loadingIndicator.show();
     try {
       const [
@@ -45,12 +51,16 @@ const MultisigDetailsPage = () => {
         quorumSize,
         userRole,
         allActions,
+        contractName,
+        account
       ] = await Promise.all([
         multisigContract.queryBoardMembersCount(),
         multisigContract.queryProposersCount(),
         multisigContract.queryQuorumCount(),
         multisigContract.queryUserRole(new Address(address).hex()),
         multisigContract.queryAllActions(),
+        managerContract.queryContractName(currentMultisigAddress!),
+        dapp.proxy.getAccount(currentMultisigAddress!)
       ]);
 
       dispatch({
@@ -76,6 +86,16 @@ const MultisigDetailsPage = () => {
       dispatch({
         type: 'setAllActions',
         allActions: allActions
+      });
+
+      dispatch({
+        type: 'setMultisigBalance',
+        multisigBalance: account.balance
+      });
+
+      dispatch({
+        type: 'setMultisigName',
+        multisigName: contractName
       });
     } catch (error) {
       console.error(error);
@@ -221,7 +241,7 @@ const MultisigDetailsPage = () => {
       <div className="card border-0">
         <div className="header card-header d-flex align-items-center border-0 justify-content-between px-spacer">
           <div className="py-spacer text-truncate">
-            <p className="opacity-6 mb-0">{t('Multisig Address')}</p>
+            <p className="opacity-6 mb-0">{multisigName}</p>
             <span className="text-truncate">{currentMultisigAddress?.bech32()}</span>
           </div>
           <div className="d-flex justify-content-center align-items-center justify-content-between">
@@ -233,6 +253,13 @@ const MultisigDetailsPage = () => {
         
 
         <div className="cards d-flex flex-wrap mr-spacer">
+          <StatCard
+            title={t('Balance')}
+            value={multisigBalance.toDenominated().toString().slice(0, multisigBalance.toDenominated().toString().length - 16)}
+            valueUnit={egldLabel}
+            color="orange"
+            svg="money.svg"
+          />
           <StatCard
             title={t('Board Members')}
             value={totalBoardMembers.toString()}

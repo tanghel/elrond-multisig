@@ -13,6 +13,8 @@ export type ActionType =
   | { type: 'setUserRole'; userRole: StateType['userRole'] }
   | { type: 'setAllActions'; allActions: StateType['allActions'] }
   | { type: 'setCurrentMultisigAddress'; currentMultisigAddress: StateType['currentMultisigAddress'] }
+  | { type: 'setMultisigBalance'; multisigBalance: StateType['multisigBalance'] }
+  | { type: 'setMultisigName'; multisigName: StateType['multisigName'] }
   ;
 
 export function reducer(state: StateType, action: ActionType): StateType {
@@ -82,6 +84,22 @@ export function reducer(state: StateType, action: ActionType): StateType {
       return {
         ...state,
         currentMultisigAddress,
+      };
+    }
+
+    case 'setMultisigBalance': {
+      const { multisigBalance } = action;
+      return {
+        ...state,
+        multisigBalance,
+      };
+    }
+
+    case 'setMultisigName': {
+      const { multisigName } = action;
+      return {
+        ...state,
+        multisigName,
       };
     }
 

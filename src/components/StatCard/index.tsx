@@ -7,6 +7,7 @@ import { ReactComponent as BoardMember } from '../../assets/images/clipboard-che
 import { ReactComponent as Proposer } from '../../assets/images/clipboard-list.svg';
 import { ReactComponent as Quorum } from '../../assets/images/quorum.svg';
 import { ReactComponent as User } from '../../assets/images/user.svg';
+import { ReactComponent as Money } from '../../assets/images/money.svg';
 
 export interface StatCardType {
   title?: string;
@@ -41,6 +42,8 @@ const StatCard = ({
             <Quorum style={{ width: 32, height: 32 }} /> :
             svg === 'user.svg' ?
             <User style={{ width: 32, height: 32 }} /> :
+            svg === 'money.svg' ?
+            <Money style={{ width: 32, height: 32 }} /> :
             <SVG src={process.env.PUBLIC_URL + '/' + svg} className="text-white"></SVG>
           }
         </div>

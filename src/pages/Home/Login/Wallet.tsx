@@ -48,13 +48,6 @@ const WalletLogin = () => {
             removeItem('wallet_login');
             dispatch({ type: 'login', address });
           })
-          // .then(value =>
-          //   dapp.proxy
-          //     .getAccount(new Address(getItem('address')))
-          //     .then(account =>
-          //       console.log({account})
-          //     )
-          // )
           .catch(err => {
             loadingIndicator.hide();
           });
