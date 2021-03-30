@@ -35,8 +35,8 @@ const MultisigCard = ({
       </div>
       <div className="d-flex flex-wrap align-items-center justify-content-between mb-2">
           <div>
-            <div className="opacity-6">{address.bech32()}</div>
             <div className="h5 mb-0">{name}</div>
+            <div className="opacity-6">{address.bech32()}</div>
           </div>
           <div>
             <button onClick={onEnterClicked} className="btn btn-primary mb-3 mr-2">{t('Enter')}</button>

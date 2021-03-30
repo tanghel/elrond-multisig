@@ -1,4 +1,4 @@
-import { IDappProvider, ProxyProvider, ApiProvider, WalletProvider, Address } from '@elrondnetwork/erdjs';
+import { IDappProvider, ProxyProvider, ApiProvider, WalletProvider, Address, Balance } from '@elrondnetwork/erdjs';
 import { MultisigActionDetailed } from 'types/MultisigActionDetailed';
 import { denomination, decimals, network, NetworkType } from '../config';
 import { getItem } from '../storage/session';
@@ -42,6 +42,8 @@ export interface StateType {
   userRole: number;
   allActions: MultisigActionDetailed[];
   currentMultisigAddress?: Address;
+  multisigBalance: Balance;
+  multisigName: string;
 }
 
 export const emptyAccount: AccountType = {
@@ -86,6 +88,8 @@ export const initialState = () => {
     totalProposers: 0,
     quorumSize: 0,
     userRole: 0,
+    multisigBalance: new Balance(BigInt(0)),
+    multisigName: '',
     allActions: [], 
   };
 };

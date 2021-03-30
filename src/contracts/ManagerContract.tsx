@@ -64,6 +64,16 @@ export class ManagerContract {
     return this.queryMultisigContractInfoArray('getMultisigContracts', Argument.fromPubkey(this.address));
   }
 
+  public async queryContractName(multisigAddress: Address) {
+    return this.queryString('getMultisigContractName', Argument.fromPubkey(multisigAddress));
+  }
+
+  private async queryString(functionName: string, ...args: Array<Argument>): Promise<string> {
+    let result = await this.query(functionName, ...args);
+
+    return result.returnData[0].asString;
+  }
+
   private async query(functionName: string, ...args: Argument[]) {
     const query = new Query({
       address: this.contract.getAddress(),
