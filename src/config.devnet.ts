@@ -12,11 +12,11 @@ export const network: NetworkType = {
   gatewayAddress: 'https://devnet-gateway.elrond.com',
   explorerAddress: 'http://devnet-explorer.elrond.com/',
   multisigDeployerContracts: [ 
-    'erd1qqqqqqqqqqqqqpgqmv4ywkst377ngwh0yyaj3kdufwwl04sherms282gz6',
-    'erd1qqqqqqqqqqqqqpgqcm2ns0994y9qsuzchl33hu78eklu93syermstt4g4d',
-    'erd1qqqqqqqqqqqqqpgq2c6z26r5q046w9jkzrvjxc9fgjwh54zcermsxtn8u5',
+    'erd1qqqqqqqqqqqqqpgqv00sumumxt6pswtfp7u87md7k7apgll8ermsg9qmze',
+    'erd1qqqqqqqqqqqqqpgqv00sumumxt6pswtfp7u87md7k7apgll8ermsg9qmze',
+    'erd1qqqqqqqqqqqqqpgqv00sumumxt6pswtfp7u87md7k7apgll8ermsg9qmze',
   ],
-  multisigManagerContract: 'erd1qqqqqqqqqqqqqpgqc3342h2wsjh7xmvxm6ka99peplvclj2serms5at6s2',
+  multisigManagerContract: 'erd1qqqqqqqqqqqqqpgqjsq7r0vsemjxxyruh4scgut3jgc6dtasermsq7ejx9',
 };
 
 const networkSchema = object({

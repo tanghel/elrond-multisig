@@ -14,6 +14,7 @@
     "@types/react": "^16.14.5",
     "@types/react-dom": "^16.9.12",
     "@types/react-router-dom": "^5.1.6",
+    "@types/socket.io-client": "^1.4.36",
     "bignumber.js": "^9.0.1",
     "bootstrap": "^4.6.0",
     "formik": "^2.2.6",
@@ -32,6 +33,7 @@
     "react-scripts": "4.0.1",
     "react-stepper-horizontal": "^1.0.11",
     "reinspect": "^1.1.0",
+    "socket.io": "^2.3.0",
     "yup": "^0.32.9"
   },
   "scripts": {

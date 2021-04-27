@@ -15,6 +15,7 @@ import { hexToNumber, hexToString } from 'helpers/converters';
 import { useConfirmModal } from 'components/ConfirmModal/ConfirmModalPayload';
 import { useTranslation } from 'react-i18next';
 import { useManagerContract } from 'contracts/ManagerContract';
+import io from 'socket.io-client';
 
 interface MultisigDetailsPageParams {
   multisigAddressParam: string
@@ -224,6 +225,45 @@ const MultisigDetailsPage = () => {
     if (isCurrentMultisigAddressNotSet || isCurrentMultisigAddressDiferentThanParam) {
       dispatch({ type: 'setCurrentMultisigAddress', currentMultisigAddress: multisigAddressParam });
     } else if (address !== null) {
+      let socket = io('http://localhost:3002');
+      socket.on(`balanceChanged:${currentMultisigAddress}`, () => getDashboardInfo());
+
+      socket.on(`vm-query:${currentMultisigAddress}:getNumBoardMembers`, async () => {
+        let boardMembers = await multisigContract.queryBoardMembersCount();
+
+        dispatch({
+          type: 'setTotalBoardMembers',
+          totalBoardMembers: boardMembers
+        });
+      });
+
+      socket.on(`vm-query:${currentMultisigAddress}:getNumProposers`, async () => {
+        let proposers = await multisigContract.queryProposersCount();
+
+        dispatch({
+          type: 'setTotalProposers',
+          totalProposers: proposers
+        });
+      });
+
+      socket.on(`vm-query:${currentMultisigAddress}:getQuorum`, async () => {
+        let quorumCount = await multisigContract.queryQuorumCount();
+
+        dispatch({
+          type: 'setQuorumSize',
+          quorumSize: quorumCount
+        });
+      });
+
+      socket.on(`vm-query:${currentMultisigAddress}:userRole:${address}`, async () => {
+        let userRole = await multisigContract.queryUserRole(address);
+
+        dispatch({
+          type: 'setUserRole',
+          userRole: userRole
+        });
+      });
+
       getDashboardInfo();
     }
   }, [ currentMultisigAddress, address ]);
