@@ -21,6 +21,7 @@ import { MultisigActionDetailed } from 'types/MultisigActionDetailed';
 import { MultisigIssueToken } from 'types/MultisigIssueToken';
 import { MultisigSendToken } from 'types/MultisigSendToken';
 import { useContext } from 'context';
+import axios from 'axios';
 
 export class MultisigContract {
   private dapp: DappState;
@@ -133,16 +134,22 @@ export class MultisigContract {
     return this.queryActionContainerArray('getPendingActionFullInfo');
   }
 
-  queryBoardMembersCount(): Promise<number> {
-    return this.queryNumber('getNumBoardMembers');
+  async queryBoardMembersCount(): Promise<number> {
+    // return this.queryNumber('getNumBoardMembers');
+    let response = await axios.get('http://localhost:3001/multisig/boardMembers');
+    return response.data;
   }
 
-  queryProposersCount(): Promise<number> {
-    return this.queryNumber('getNumProposers');
+  async queryProposersCount(): Promise<number> {
+    // return this.queryNumber('getNumProposers');
+    let response = await axios.get('http://localhost:3001/multisig/proposers');
+    return response.data;
   }
 
-  queryQuorumCount(): Promise<number> {
-    return this.queryNumber('getQuorum');
+  async queryQuorumCount(): Promise<number> {
+    // return this.queryNumber('getQuorum');
+    let response = await axios.get('http://localhost:3001/multisig/quorumSize');
+    return response.data;
   }
 
   queryActionLastId(): Promise<number> {
@@ -153,8 +160,10 @@ export class MultisigContract {
     return this.queryActionContainer('getActionData', Argument.fromNumber(actionId));
   }
 
-  queryUserRole(userAddress: string): Promise<number> {
-    return this.queryNumber('userRole', Argument.fromHex(userAddress));
+  async queryUserRole(userAddress: string): Promise<number> {
+    // return this.queryNumber('userRole', Argument.fromHex(userAddress));
+    let response = await axios.get('http://localhost:3001/multisig/userRole/' + new Address(userAddress).bech32());
+    return response.data;
   }
 
   queryBoardMemberAddresses(): Promise<Address[]> {
