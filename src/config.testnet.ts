@@ -7,16 +7,16 @@ export const network: NetworkType = {
   id: 'testnet',
   name: 'Testnet',
   egldLabel: 'xEGLD',
-  walletAddress: 'https://testnet-wallet.elrond.com/dapp/init',
-  apiAddress: 'https://testnet-api.elrond.com',
-  gatewayAddress: 'https://testnet-gateway.elrond.com',
-  explorerAddress: 'http://testnet-explorer.elrond.com/',
+  walletAddress: 'https://devnet-wallet.elrond.com/dapp/init',
+  apiAddress: 'https://devnet-api.elrond.com',
+  gatewayAddress: 'https://devnet-gateway.elrond.com',
+  explorerAddress: 'http://devnet-explorer.elrond.com/',
   multisigDeployerContracts: [ 
-    'erd1qqqqqqqqqqqqqpgq2z9703wl0406ewezyhrgzfmm8xj8zuuvermsfmmmga',
-    'erd1qqqqqqqqqqqqqpgq8x7ha7ukpgcazmlls8k3xqpse20u2h0lerms2ja5gk',
-    'erd1qqqqqqqqqqqqqpgq43nyeuvpa6h5ept8hp02l76jsalssmg6ermsfyms44',
+    'erd1qqqqqqqqqqqqqpgqx55dua9mjepmxtvejhgrcn6qj5lmftx3ermst6wtjn',
+    'erd1qqqqqqqqqqqqqpgqx55dua9mjepmxtvejhgrcn6qj5lmftx3ermst6wtjn',
+    'erd1qqqqqqqqqqqqqpgqx55dua9mjepmxtvejhgrcn6qj5lmftx3ermst6wtjn',
   ],
-  multisigManagerContract: 'erd1qqqqqqqqqqqqqpgq2k0z4fqpsjfsnt9ww7dz2tj2s2ma43rlerms6hdhqn',
+  multisigManagerContract: 'erd1qqqqqqqqqqqqqpgqpueavdgy55zcw6js4ppty4fdtnha3xhferms680hv4',
 };
 
 const networkSchema = object({
