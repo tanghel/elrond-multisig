@@ -9,7 +9,9 @@ import {
   HWProvider,
   Address,
   SmartContract,
-  Argument,
+  U8Value,
+  AddressValue,
+  TypedValue,
 } from '@elrondnetwork/erdjs';
 import { useContext } from 'context';
 
@@ -30,13 +32,13 @@ export class DeployContract {
   }
 
   public async mutateDeploy(quorum: number, boardMembers: Address[]) {
-    this.sendTransaction(0, 'deployContract', Argument.fromNumber(quorum), ...boardMembers.map(x => Argument.fromPubkey(x)));
+    this.sendTransaction(0, 'deployContract', new U8Value(quorum), ...boardMembers.map(x => new AddressValue(x)));
   }
 
   private async sendTransaction(
     value: number,
     functionName: string,
-    ...args: Argument[]
+    ...args: TypedValue[]
   ): Promise<boolean> {
     if (!this.signerProvider) {
       throw new Error(
@@ -59,7 +61,7 @@ export class DeployContract {
   private async sendTransactionBasedOnType(
     value: number,
     functionName: string,
-    ...args: Argument[]
+    ...args: TypedValue[]
   ): Promise<boolean> {
     const func = new ContractFunction(functionName);
 
@@ -70,7 +72,7 @@ export class DeployContract {
 
     let transaction = new Transaction({
       receiver: this.contract.getAddress(),
-      value: Balance.eGLD(value),
+      value: Balance.egld(value),
       gasLimit: new GasLimit(this.standardGasLimit),
       data: payload,
     });

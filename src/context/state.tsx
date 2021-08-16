@@ -62,13 +62,11 @@ export const initialState = () => {
         sessionNetwork.gatewayAddress !== undefined
           ? sessionNetwork?.gatewayAddress
           : 'https://gateway.elrond.com/',
-        4000
       ),
       apiProvider: new ApiProvider(
         sessionNetwork.apiAddress !== undefined
           ? sessionNetwork?.apiAddress
           : 'https://api.elrond.com/',
-        4000
       ),
       apiUrl: sessionNetwork.apiAddress !== undefined
         ? sessionNetwork?.apiAddress
@@ -88,7 +86,7 @@ export const initialState = () => {
     totalProposers: 0,
     quorumSize: 0,
     userRole: 0,
-    multisigBalance: new Balance(BigInt(0)),
+    multisigBalance: new Balance('0'),
     multisigName: '',
     allActions: [], 
   };

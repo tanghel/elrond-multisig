@@ -9,18 +9,20 @@ import {
   HWProvider,
   Address,
   SmartContract,
-  Argument,
+  BinaryCodec,
 } from '@elrondnetwork/erdjs';
 
 import { parseAction, parseActionDetailed } from 'helpers/converters';
 import { Query } from '@elrondnetwork/erdjs/out/smartcontracts/query';
 import { DappState } from '../context/state';
-import { BigUIntValue } from '@elrondnetwork/erdjs/out/smartcontracts/typesystem';
+import { AddressValue, BigIntValue, BigUIntValue, BooleanType, BooleanValue, BytesValue, NumericalValue, TypedValue, U32Type, U32Value } from '@elrondnetwork/erdjs/out/smartcontracts/typesystem';
 import { MultisigAction } from 'types/MultisigAction';
 import { MultisigActionDetailed } from 'types/MultisigActionDetailed';
 import { MultisigIssueToken } from 'types/MultisigIssueToken';
 import { MultisigSendToken } from 'types/MultisigSendToken';
 import { useContext } from 'context';
+import BigNumber from 'bignumber.js';
+import { NumericalBinaryCodec } from '@elrondnetwork/erdjs/out/smartcontracts/codec/numerical';
 
 export class MultisigContract {
   private dapp: DappState;
@@ -35,95 +37,95 @@ export class MultisigContract {
   }
 
   mutateSign(actionId: number) {
-    return this.sendTransaction(0, 'sign', Argument.fromNumber(actionId));
+    return this.sendTransaction(0, 'sign', new U32Value(actionId));
   }
 
   mutateUnsign(actionId: number) {
-    return this.sendTransaction(0, 'unsign', Argument.fromNumber(actionId));
+    return this.sendTransaction(0, 'unsign', new U32Value(actionId));
   }
 
   mutatePerformAction(actionId: number) {
-    return this.sendTransaction(0, 'performAction', Argument.fromNumber(actionId));
+    return this.sendTransaction(0, 'performAction', new U32Value(actionId));
   }
 
   mutateDiscardAction(actionId: number) {
-    return this.sendTransaction(0, 'discardAction', Argument.fromNumber(actionId));
+    return this.sendTransaction(0, 'discardAction', new U32Value(actionId));
   }
 
   mutateProposeChangeQuorum(quorumSize: number) {
-    return this.sendTransaction(0, 'proposeChangeQuorum', Argument.fromNumber(quorumSize));
+    return this.sendTransaction(0, 'proposeChangeQuorum', new U32Value(quorumSize));
   }
 
   mutateProposeAddProposer(address: Address) {
-    return this.sendTransaction(0, 'proposeAddProposer', Argument.fromHex(address.hex()));
+    return this.sendTransaction(0, 'proposeAddProposer', new AddressValue(address));
   }
 
   mutateProposeAddBoardMember(address: Address) {
-    return this.sendTransaction(0, 'proposeAddBoardMember', Argument.fromHex(address.hex()));
+    return this.sendTransaction(0, 'proposeAddBoardMember', new AddressValue(address));
   }
 
   mutateProposeRemoveUser(address: Address) {
-    return this.sendTransaction(0, 'proposeRemoveUser', Argument.fromHex(address.hex()));
+    return this.sendTransaction(0, 'proposeRemoveUser', new AddressValue(address));
   }
 
   mutateSendEgld(address: Address, amount: BigUIntValue, data: string) {
-    return this.sendTransaction(0, 'proposeSendEgld', Argument.fromPubkey(address), Argument.fromBigInt(BigInt(amount)), Argument.fromBytes(Buffer.from(data)));
+    return this.sendTransaction(0, 'proposeSendEgld', new AddressValue(address), amount, BytesValue.fromUTF8(data));
   }
 
-  mutateSmartContractCall(address: Address, amount: BigUIntValue, endpointName: string, args: Argument[]) {
-    let allArgs = [ Argument.fromPubkey(address), Argument.fromBigInt(amount.valueOf()), Argument.fromUTF8(endpointName) ];
+  mutateSmartContractCall(address: Address, amount: BigUIntValue, endpointName: string, args: TypedValue[]) {
+    let allArgs: TypedValue[] = [ new AddressValue(address), amount, BytesValue.fromUTF8(endpointName) ];
     allArgs.push(...args);
 
     return this.sendTransaction(0, 'proposeSCCall', ...allArgs);
   }
 
   mutateEsdtSendToken(proposal: MultisigSendToken) {
-    this.mutateSmartContractCall(proposal.address, new BigUIntValue(BigInt(0)), 'ESDTTransfer', [ Argument.fromUTF8(proposal.identifier), Argument.fromNumber(proposal.amount) ]);
+    this.mutateSmartContractCall(proposal.address, new BigUIntValue(new BigNumber(0)), 'ESDTTransfer', [ BytesValue.fromUTF8(proposal.identifier), new U32Value(proposal.amount) ]);
   }
 
   mutateEsdtIssueToken(proposal: MultisigIssueToken) {
     let esdtAddress = new Address('erd1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls8a5w6u');
-    let esdtAmount = new BigUIntValue(Balance.eGLD(5).valueOf());
+    let esdtAmount = new BigUIntValue(Balance.egld(5).valueOf());
 
     let args = [];
-    args.push(Argument.fromUTF8(proposal.name));
-    args.push(Argument.fromUTF8(proposal.identifier));
-    args.push(Argument.fromNumber(proposal.amount * Math.pow(10, proposal.decimals)));
-    args.push(Argument.fromNumber(proposal.decimals));
+    args.push(BytesValue.fromUTF8(proposal.name));
+    args.push(BytesValue.fromUTF8(proposal.identifier));
+    args.push(new U32Value(proposal.amount * Math.pow(10, proposal.decimals)));
+    args.push(new U32Value(proposal.decimals));
 
     if (proposal.canFreeze) {
-      args.push(Argument.fromUTF8('canFreeze'));
-      args.push(Argument.fromUTF8('true'));
+      args.push(BytesValue.fromUTF8('canFreeze'));
+      args.push(BytesValue.fromUTF8('true'));
     }
 
     if (proposal.canWipe) {
-      args.push(Argument.fromUTF8('canWipe'));
-      args.push(Argument.fromUTF8('true'));
+      args.push(BytesValue.fromUTF8('canWipe'));
+      args.push(BytesValue.fromUTF8('true'));
     }
 
     if (proposal.canPause) {
-      args.push(Argument.fromUTF8('canPause'));
-      args.push(Argument.fromUTF8('true'));
+      args.push(BytesValue.fromUTF8('canPause'));
+      args.push(BytesValue.fromUTF8('true'));
     }
 
     if (proposal.canMint) {
-      args.push(Argument.fromUTF8('canMint'));
-      args.push(Argument.fromUTF8('true'));
+      args.push(BytesValue.fromUTF8('canMint'));
+      args.push(BytesValue.fromUTF8('true'));
     }
 
     if (proposal.canBurn) {
-      args.push(Argument.fromUTF8('canBurn'));
-      args.push(Argument.fromUTF8('true'));
+      args.push(BytesValue.fromUTF8('canBurn'));
+      args.push(BytesValue.fromUTF8('true'));
     }
 
     if (proposal.canChangeOwner) {
-      args.push(Argument.fromUTF8('canChangeOwner'));
-      args.push(Argument.fromUTF8('true'));
+      args.push(BytesValue.fromUTF8('canChangeOwner'));
+      args.push(BytesValue.fromUTF8('true'));
     }
 
     if (proposal.canUpgrade) {
-      args.push(Argument.fromUTF8('canUpgrade'));
-      args.push(Argument.fromUTF8('true'));
+      args.push(BytesValue.fromUTF8('canUpgrade'));
+      args.push(BytesValue.fromUTF8('true'));
     }
 
     this.mutateSmartContractCall(esdtAddress, esdtAmount, 'issue', args);
@@ -150,11 +152,11 @@ export class MultisigContract {
   }
 
   queryActionData(actionId: number): Promise<MultisigAction | null> {
-    return this.queryActionContainer('getActionData', Argument.fromNumber(actionId));
+    return this.queryActionContainer('getActionData', new U32Value(actionId));
   }
 
   queryUserRole(userAddress: string): Promise<number> {
-    return this.queryNumber('userRole', Argument.fromHex(userAddress));
+    return this.queryNumber('userRole', new AddressValue(new Address(userAddress)));
   }
 
   queryBoardMemberAddresses(): Promise<Address[]> {
@@ -166,55 +168,55 @@ export class MultisigContract {
   }
 
   queryActionSignerAddresses(actionId: number): Promise<Address[]> {
-    return this.queryAddressArray('getActionSigners', Argument.fromNumber(actionId));
+    return this.queryAddressArray('getActionSigners', new U32Value(actionId));
   }
 
   queryActionSignerCount(actionId: number): Promise<number> {
-    return this.queryNumber('getActionSignerCount', Argument.fromNumber(actionId));
+    return this.queryNumber('getActionSignerCount', new U32Value(actionId));
   }
 
   queryActionValidSignerCount(actionId: number): Promise<number> {
-    return this.queryNumber('getActionValidSignerCount', Argument.fromNumber(actionId));
+    return this.queryNumber('getActionValidSignerCount', new U32Value(actionId));
   }
 
   queryActionIsQuorumReached(actionId: number): Promise<boolean> {
-    return this.queryBoolean('quorumReached', Argument.fromNumber(actionId));
+    return this.queryBoolean('quorumReached', new U32Value(actionId));
   }
 
   queryActionIsSignedByAddress(userAddress: Address, actionId: number): Promise<boolean> {
-    return this.queryBoolean('signed', Argument.fromHex(userAddress.hex()), Argument.fromNumber(actionId));
+    return this.queryBoolean('signed', new AddressValue(userAddress), new U32Value(actionId));
   }
 
-  private async queryNumber(functionName: string, ...args: Array<Argument>): Promise<number> {
+  private async queryNumber(functionName: string, ...args: TypedValue[]): Promise<number> {
     let result = await this.query(functionName, ...args);
 
-    return result.returnData[0].asNumber;
+    let codec = new NumericalBinaryCodec();
+    return codec.decodeTopLevel(result.outputUntyped()[0], new U32Type()).valueOf().toNumber();
   }
 
-  private async queryBoolean(functionName: string, ...args: Array<Argument>): Promise<boolean> {
+  private async queryBoolean(functionName: string, ...args: TypedValue[]): Promise<boolean> {
     let result = await this.query(functionName, ...args);
 
-    return result.returnData[0].asBool;
+    let codec = new BinaryCodec();
+    return codec.decodeTopLevel<BooleanValue>(result.outputUntyped()[0], new BooleanType()).valueOf();
   }
 
-  private async queryActionContainer(functionName: string, ...args: Array<Argument>): Promise<MultisigAction | null> {
+  private async queryActionContainer(functionName: string, ...args: TypedValue[]): Promise<MultisigAction | null> {
     let result = await this.query(functionName, ...args);
 
     if (result.returnData.length === 0) {
       return null;
     }
 
-    let [action] = parseAction(result.returnData[0].asBuffer);
+    let [action] = parseAction(result.outputUntyped()[0]);
     return action;
   }
 
-  private async queryActionContainerArray(functionName: string, ...args: Array<Argument>): Promise<MultisigActionDetailed[]> {
+  private async queryActionContainerArray(functionName: string, ...args: TypedValue[]): Promise<MultisigActionDetailed[]> {
     let result = await this.query(functionName, ...args);
 
     let actions = [];
-    for (let returnData of result.returnData) {
-        let buffer = returnData.asBuffer;
-        
+    for (let buffer of result.outputUntyped()) {
         let action = parseActionDetailed(buffer);
         if (action !== null) {
           actions.push(action);
@@ -224,13 +226,13 @@ export class MultisigContract {
     return actions;
   }
 
-  private async queryAddressArray(functionName: string, ...args: Array<Argument>): Promise<Address[]> {
+  private async queryAddressArray(functionName: string, ...args: TypedValue[]): Promise<Address[]> {
     let result = await this.query(functionName, ...args);
 
-    return result.returnData.map(x => new Address(x.asHex));
+    return result.outputUntyped().map(x => new Address(x));
   }
 
-  private async query(functionName: string, ...args: Array<Argument>) {
+  private async query(functionName: string, ...args: TypedValue[]) {
     const query = new Query({
       address: this.contract.getAddress(),
       func: new ContractFunction(functionName),
@@ -243,7 +245,7 @@ export class MultisigContract {
   private async sendTransaction(
     value: number,
     functionName: string,
-    ...args: Argument[]
+    ...args: TypedValue[]
   ): Promise<boolean> {
     if (!this.signerProvider) {
       throw new Error(
@@ -266,7 +268,7 @@ export class MultisigContract {
   private async sendTransactionBasedOnType(
     value: number,
     functionName: string,
-    ...args: Argument[]
+    ...args: TypedValue[]
   ): Promise<boolean> {
     const func = new ContractFunction(functionName);
 
@@ -277,7 +279,7 @@ export class MultisigContract {
 
     let transaction = new Transaction({
       receiver: this.contract.getAddress(),
-      value: Balance.eGLD(value),
+      value: Balance.egld(value),
       gasLimit: new GasLimit(this.standardGasLimit),
       data: payload,
     });

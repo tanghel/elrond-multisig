@@ -23,7 +23,7 @@ const ProposeSendEgld = ({ handleChange } : ProposeSendEgldType) => {
       return null;
     }
 
-    let amountParam = new BigUIntValue(Balance.eGLD(amountNumeric).valueOf());
+    let amountParam = new BigUIntValue(Balance.egld(amountNumeric).valueOf());
 
     return new MultisigSendEgld(addressParam, amountParam, data);
   };
