@@ -17,7 +17,7 @@ export type ActionType =
   | { type: 'setMultisigName'; multisigName: StateType['multisigName'] }
   ;
 
-export function reducer(state: StateType, action: ActionType): StateType {
+export function reducer(state: StateType, action: any): StateType {
   switch (action.type) {
     case 'login': {
       const { address } = action;
@@ -108,14 +108,14 @@ export function reducer(state: StateType, action: ActionType): StateType {
       provider
         .logout()
         .then()
-        .catch(e => console.error('logout', e));
+        .catch((e: any) => console.error('logout', e));
       removeItem('logged_in');
       removeItem('address');
       return initialState();
     }
 
     default: {
-      throw new Error(`Unhandled action type: ${action!.type}`);
+      throw new Error(`Unhandled action type: ${action?.type}`);
     }
   }
 }

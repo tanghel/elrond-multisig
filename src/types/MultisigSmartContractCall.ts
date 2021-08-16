@@ -1,6 +1,6 @@
-import { Address, Argument, Balance } from '@elrondnetwork/erdjs/out';
-import { BigUIntValue } from '@elrondnetwork/erdjs/out/smartcontracts/typesystem';
-import { hexToBigInt, hexToNumber, hexToString } from 'helpers/converters';
+import { Address, Balance, BinaryCodec } from '@elrondnetwork/erdjs/out';
+import { BigUIntType, BigUIntValue, BytesValue, U32Type, U32Value } from '@elrondnetwork/erdjs/out/smartcontracts/typesystem';
+import { hexToBigInt, hexToString } from 'helpers/converters';
 import { MultisigAction } from './MultisigAction';
 import { MultisigActionType } from './MultisigActionType';
 import i18next from 'i18next';
@@ -9,9 +9,9 @@ export class MultisigSmartContractCall extends MultisigAction {
     address: Address;
     amount: BigUIntValue;
     endpointName: string;
-    args: Argument[];
+    args: BytesValue[];
   
-    constructor(address: Address, amount: BigUIntValue, endpointName: string, args: Argument[]) { 
+    constructor(address: Address, amount: BigUIntValue, endpointName: string, args: BytesValue[]) { 
         super(MultisigActionType.SCCall);
         this.address = address;
         this.amount = amount;
@@ -38,7 +38,7 @@ export class MultisigSmartContractCall extends MultisigAction {
           return this.getSendTokenDescription();
       }
 
-      return `${this.endpointName}: ${new Balance(this.amount.valueOf()).toCurrencyString()} to ${this.address.bech32()}`;
+      return `${this.endpointName}: ${new Balance(this.amount.valueOf().toString()).toCurrencyString()} to ${this.address.bech32()}`;
     }
 
     tooltip() {
@@ -54,8 +54,8 @@ export class MultisigSmartContractCall extends MultisigAction {
       let extraProperties = [];
       let index = 4;
       while (index < this.args.length) {
-        let name = hexToString(this.args[index++].valueOf()) ?? '';
-        let value = hexToString(this.args[index++].valueOf()) ?? '';
+        let name = this.args[index++].valueOf();
+        let value = this.args[index++].valueOf();
 
         extraProperties.push({name, value});
       }
@@ -64,17 +64,20 @@ export class MultisigSmartContractCall extends MultisigAction {
     }
 
     getSendTokenDescription(): string {
-      let identifier = hexToString(this.args[0].valueOf()) ?? 'Unknown';
-      let amount = hexToBigInt(this.args[1].valueOf()) ?? BigInt(0);
+      let identifier = this.args[0].valueOf().toString();
+      let codec = new BinaryCodec();
+      let amount = codec.decodeTopLevel<BigUIntValue>(this.args[1].valueOf(), new BigUIntType()).valueOf();
 
       return `${i18next.t('Identifier')}: ${identifier}, ${i18next.t('Amount')}: ${amount}`;
     }
 
     getIssueTokenDescription(): string {
-      let name = hexToString(this.args[0].valueOf()) ?? 'Unknown';
-      let identifier = hexToString(this.args[1].valueOf()) ?? 'Unknown';
-      let amount = hexToBigInt(this.args[2].valueOf()) ?? BigInt(0);
-      let decimals = hexToNumber(this.args[3].valueOf()) ?? 0;
+      let name = this.args[0].valueOf().toString();
+      let identifier = this.args[1].valueOf().toString();
+
+      let codec = new BinaryCodec();
+      let amount = codec.decodeTopLevel<BigUIntValue>(this.args[2].valueOf(), new BigUIntType()).valueOf();
+      let decimals = codec.decodeTopLevel<U32Value>(this.args[3].valueOf(), new U32Type()).valueOf().toNumber();
 
       let amountString = amount.toString().slice(0, amount.toString().length - decimals);
 

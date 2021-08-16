@@ -1,6 +1,7 @@
-import { Address, Argument, Nonce } from '@elrondnetwork/erdjs/out';
+import { Address, Nonce } from '@elrondnetwork/erdjs/out';
 import { NumericalBinaryCodec } from '@elrondnetwork/erdjs/out/smartcontracts/codec/numerical';
-import { BigUIntType } from '@elrondnetwork/erdjs/out/smartcontracts/typesystem';
+import { BigUIntType, BigUIntValue, BytesValue, U32Value, U64Value } from '@elrondnetwork/erdjs/out/smartcontracts/typesystem';
+import BigNumber from 'bignumber.js';
 import { MultisigAction } from 'types/MultisigAction';
 import { MultisigActionDetailed } from 'types/MultisigActionDetailed';
 import { MultisigActionType } from 'types/MultisigActionType';
@@ -75,7 +76,7 @@ function parseSendEgld(remainingBytes: Buffer): [ MultisigAction | null, Buffer 
   remainingBytes = remainingBytes.slice(amountSize);
 
   let codec = new NumericalBinaryCodec();
-  let amount = codec.decodeTopLevel(amountBytes, BigUIntType.One);
+  let amount = codec.decodeTopLevel(amountBytes, new BigUIntType());
 
   let dataSize = getIntValueFromBytes(remainingBytes.slice(0, 4));
   remainingBytes = remainingBytes.slice(4);
@@ -101,7 +102,7 @@ function parseSmartContractCall(remainingBytes: Buffer): [ MultisigAction | null
   remainingBytes = remainingBytes.slice(amountSize);
 
   let codec = new NumericalBinaryCodec();
-  let amount = codec.decodeTopLevel(amountBytes, BigUIntType.One);
+  let amount = codec.decodeTopLevel(amountBytes, new BigUIntType());
 
   let endpointNameSize = getIntValueFromBytes(remainingBytes.slice(0, 4));
   remainingBytes = remainingBytes.slice(4);
@@ -122,7 +123,7 @@ function parseSmartContractCall(remainingBytes: Buffer): [ MultisigAction | null
     let argBytes = remainingBytes.slice(0, argSize);
     remainingBytes = remainingBytes.slice(argSize);
 
-    args.push(Argument.fromBytes(argBytes));
+    args.push(new BytesValue(argBytes));
   }
 
   let action = new MultisigSmartContractCall(targetAddress, amount, endpointName, args);
@@ -189,7 +190,7 @@ export function getBytesFromHexString(hex: string) {
 
 export function get32BitBufferFromNumber(value: number) {
   let paddedBuffer = Buffer.alloc(4);
-  let encodedValue = Argument.fromNumber(value).valueOf();
+  let encodedValue = new U32Value(value).valueOf();
 
   let encodedBuffer = getBytesFromHexString(encodedValue.toString());
   let concatenatedBuffer = Buffer.concat([paddedBuffer, encodedBuffer]);
@@ -199,7 +200,7 @@ export function get32BitBufferFromNumber(value: number) {
 
 export function get64BitBufferFromBigIntBE(value: BigInt) {
   let paddedBuffer = Buffer.alloc(8);
-  let encodedValue = Argument.fromBigInt(value).valueOf();
+  let encodedValue = new U64Value(new BigNumber(value.toString())).valueOf();
 
   let encodedBuffer = getBytesFromHexString(encodedValue.toString());
   let concatenatedBuffer = Buffer.concat([paddedBuffer, encodedBuffer]);
@@ -209,7 +210,7 @@ export function get64BitBufferFromBigIntBE(value: BigInt) {
 
 export function get64BitBufferFromBigIntLE(value: BigInt) {
   let paddedBuffer = Buffer.alloc(8);
-  let encodedValue = Argument.fromBigInt(value).valueOf();
+  let encodedValue = new U64Value(new BigNumber(value.toString())).valueOf();
 
   let encodedBuffer = getBytesFromHexString(encodedValue.toString()).reverse();
   let concatenatedBuffer = Buffer.concat([encodedBuffer, paddedBuffer]);
@@ -269,7 +270,8 @@ export function hexToBigInt(hex: string): BigInt | null {
 
   try {
     let codec = new NumericalBinaryCodec();
-    return codec.decodeTopLevel(bytes, BigUIntType.One).valueOf();
+    let value = codec.decodeTopLevel(bytes, new BigUIntType()).valueOf();
+    return BigInt(value.toString());
   } catch {
     console.error(`Could not parse hex '${hex}' to BigInt`);
     return null;

@@ -9,7 +9,11 @@ import {
   HWProvider,
   Address,
   SmartContract,
-  Argument,
+  AddressValue,
+  BytesValue,
+  TypedValue,
+  ArgSerializer,
+  BinaryCodec,
 } from '@elrondnetwork/erdjs';
 import { Query } from '@elrondnetwork/erdjs/out/smartcontracts/query';
 import { useContext } from 'context';
@@ -33,24 +37,22 @@ export class ManagerContract {
   }
 
   public async mutateRegisterMultisigContract(multisigAddress: Address) {
-    this.sendTransaction(0, 'registerMultisigContract', Argument.fromPubkey(multisigAddress));
+    this.sendTransaction(0, 'registerMultisigContract', new AddressValue(multisigAddress));
   }
 
   public async mutateUnregisterMultisigContract(multisigAddress: Address) {
-    this.sendTransaction(0, 'unregisterMultisigContract', Argument.fromPubkey(multisigAddress));
+    this.sendTransaction(0, 'unregisterMultisigContract', new AddressValue(multisigAddress));
   }
 
   public async mutateRegisterMultisigContractName(multisigAddress: Address, name: string) {
-    this.sendTransaction(0, 'registerMultisigName', Argument.fromPubkey(multisigAddress), Argument.fromUTF8(name));
+    this.sendTransaction(0, 'registerMultisigName', new AddressValue(multisigAddress), BytesValue.fromUTF8(name));
   }
 
-  private async queryMultisigContractInfoArray(functionName: string, ...args: Argument[]): Promise<MultisigContractInfo[]> {
+  private async queryMultisigContractInfoArray(functionName: string, ...args: TypedValue[]): Promise<MultisigContractInfo[]> {
     let result = await this.query(functionName, ...args);
 
     let contractInfos = [];
-    for (let returnData of result.returnData) {
-        let buffer = returnData.asBuffer;
-        
+    for (let buffer of result.outputUntyped()) {
         let contractInfo = parseContractInfo(buffer);
         if (contractInfo !== null) {
           contractInfos.push(contractInfo);
@@ -61,20 +63,20 @@ export class ManagerContract {
   }
 
   public async queryContracts() {
-    return this.queryMultisigContractInfoArray('getMultisigContracts', Argument.fromPubkey(this.address));
+    return this.queryMultisigContractInfoArray('getMultisigContracts', new AddressValue(this.address));
   }
 
   public async queryContractName(multisigAddress: Address) {
-    return this.queryString('getMultisigContractName', Argument.fromPubkey(multisigAddress));
+    return this.queryString('getMultisigContractName', new AddressValue(multisigAddress));
   }
 
-  private async queryString(functionName: string, ...args: Array<Argument>): Promise<string> {
+  private async queryString(functionName: string, ...args: Array<TypedValue>): Promise<string> {
     let result = await this.query(functionName, ...args);
 
-    return result.returnData[0].asString;
+    return Buffer.from(result.returnData[0], 'base64').toString();
   }
 
-  private async query(functionName: string, ...args: Argument[]) {
+  private async query(functionName: string, ...args: TypedValue[]) {
     const query = new Query({
       address: this.contract.getAddress(),
       func: new ContractFunction(functionName),
@@ -87,7 +89,7 @@ export class ManagerContract {
   private async sendTransaction(
     value: number,
     functionName: string,
-    ...args: Argument[]
+    ...args: TypedValue[]
   ): Promise<boolean> {
     if (!this.signerProvider) {
       throw new Error(
@@ -110,7 +112,7 @@ export class ManagerContract {
   private async sendTransactionBasedOnType(
     value: number,
     functionName: string,
-    ...args: Argument[]
+    ...args: TypedValue[]
   ): Promise<boolean> {
     const func = new ContractFunction(functionName);
 
@@ -121,7 +123,7 @@ export class ManagerContract {
 
     let transaction = new Transaction({
       receiver: this.contract.getAddress(),
-      value: Balance.eGLD(value),
+      value: Balance.egld(value),
       gasLimit: new GasLimit(this.standardGasLimit),
       data: payload,
     });
